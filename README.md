@@ -1,16 +1,14 @@
 # suitmedia_test
 
-A new Flutter project.
+This application built for Suitmedia Internship test using Flutter which met all of the requirements that are given.
 
-## Getting Started
+## Demo
+https://github.com/user-attachments/assets/f29c06d7-c4a5-4d4f-b069-ee011802b15b
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Screenshots
+<div align="center">
+    <img src="screenshot/first_screen.png" style="padding: 5px;" width="200px"</img> 
+    <img src="screenshot/palindrome_success.png" style="padding: 5px;" width="200px"</img> 
+    <img src="screenshot/second_screen_after_user_picked.png" style="padding: 5px;" width="200px"</img> 
+    <img src="screenshot/third_screen.png" style="padding: 5px;" width="200px"</img> 
+</div>
