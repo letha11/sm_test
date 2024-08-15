@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:suitmedia_test/view/first_screen.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:suitmedia_test/bloc/user/user_bloc.dart';
 import 'package:suitmedia_test/view/third_screen.dart';
+import 'package:suitmedia_test/view/widget/custom_text_button.dart';
 
 class SecondScreen extends StatelessWidget {
-  const SecondScreen({super.key});
+  const SecondScreen({super.key, required this.name});
+
+  final String name;
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +44,24 @@ class SecondScreen extends StatelessWidget {
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   Text(
-                    'John Doe',
+                    name,
                     style: Theme.of(context).textTheme.bodyLarge,
                   ),
                   const SizedBox(height: 150),
-                  Center(
-                    child: Text(
-                      'Selected User Name',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge
-                          ?.copyWith(fontSize: 24),
-                    ),
+                  BlocBuilder<UserBloc, UserState>(
+                    buildWhen: (previous, current) =>
+                        previous.selectedUsername != current.selectedUsername,
+                    builder: (context, state) {
+                      return Center(
+                        child: Text(
+                          state.selectedUsername ?? 'Selected User Name',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyLarge
+                              ?.copyWith(fontSize: 24),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -66,8 +76,11 @@ class SecondScreen extends StatelessWidget {
                 child: CustomTextButton(
                   'Choose a User',
                   onPressed: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => const ThirdScreen()));
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ThirdScreen(),
+                      ),
+                    );
                   },
                 ),
               ),

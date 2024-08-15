@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:suitmedia_test/bloc/user/user_bloc.dart';
+import 'package:suitmedia_test/repository/user_repository.dart';
 import 'package:suitmedia_test/view/first_screen.dart';
 
 void main() {
@@ -10,19 +13,26 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-        scaffoldBackgroundColor: Colors.white,
-        textTheme: const TextTheme(
-          bodySmall: TextStyle(fontSize: 12, fontFamily: 'Poppins'),
-          bodyMedium: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w500, fontFamily: 'Poppins'),
-          bodyLarge: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.w600, fontFamily: 'Poppins'),
+    return BlocProvider(
+      create: (context) => UserBloc(userRepository: UserRepository()),
+      child: MaterialApp(
+        theme: ThemeData(
+          scaffoldBackgroundColor: Colors.white,
+          textTheme: const TextTheme(
+            bodySmall: TextStyle(fontSize: 12, fontFamily: 'Poppins'),
+            bodyMedium: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w500,
+                fontFamily: 'Poppins'),
+            bodyLarge: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+                fontFamily: 'Poppins'),
+          ),
         ),
+        title: 'Suitmedia Test',
+        home: const FirstScreen(),
       ),
-      title: 'Suitmedia Test',
-      home: const FirstScreen(),
     );
   }
 }

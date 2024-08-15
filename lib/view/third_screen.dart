@@ -1,7 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:suitmedia_test/bloc/user/user_bloc.dart';
 
-class ThirdScreen extends StatelessWidget {
+class ThirdScreen extends StatefulWidget {
   const ThirdScreen({super.key});
+
+  @override
+  State<ThirdScreen> createState() => _ThirdScreenState();
+}
+
+class _ThirdScreenState extends State<ThirdScreen> {
+  final ScrollController _scrollController = ScrollController();
+  bool isFetching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<UserBloc>().add(const GetUserWithPagination());
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+              _scrollController.position.maxScrollExtent - 50 &&
+          !isFetching) {
+        isFetching = true;
+        context.read<UserBloc>().add(const GetUserWithPagination());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,30 +48,61 @@ class ThirdScreen extends StatelessWidget {
           style: Theme.of(context).textTheme.bodyLarge,
         ),
       ),
-      body: ListView.builder(
-        itemBuilder: (context, i) {
-          return ListUserItem(
-            avatarUrl: '',
-            name: 'John Doe',
-            email: 'johndoe@gmail.com',
-            onTap: () {},
-          );
+      body: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          if (state.status == UserStatus.loading && state.users.isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (state.status == UserStatus.failure) {
+            return Center(
+              child: Text(
+                state.errorMessage,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            );
+          } else if (state.status == UserStatus.success) {
+            if (state.users.isEmpty) {
+              return const Center(
+                child: Text('No users found'),
+              );
+            } else if (!state.reachedMax) {
+              isFetching = false;
+            }
+
+            return RefreshIndicator(
+              onRefresh: () async {
+                context.read<UserBloc>().add(const RefreshUser());
+              },
+              child: ListView.builder(
+                controller: _scrollController,
+                itemBuilder: (context, i) {
+                  if (i == state.users.length) {
+                    return const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 20.0),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  return ListUserItem(
+                    avatarUrl: state.users[i].avatar,
+                    name:
+                        '${state.users[i].firstName} ${state.users[i].lastName}',
+                    email: state.users[i].email,
+                    onTap: () {
+                      context.read<UserBloc>().add(SelectUser(
+                          '${state.users[i].firstName} ${state.users[i].lastName}'));
+                    },
+                  );
+                },
+                itemCount: state.reachedMax
+                    ? state.users.length
+                    : state.users.length + 1,
+              ),
+            );
+          } else {
+            return const SizedBox();
+          }
         },
-        itemCount: 20,
       ),
-      // body: SingleChildScrollView(
-      //   child: Column(
-      //     children: [
-      //       const SizedBox(height: 15),
-      //       ListUserItem(
-      //         avatarUrl: '',
-      //         name: 'John Doe',
-      //         email: 'johndoe@gmail.com',
-      //         onTap: () {},
-      //       ),
-      //     ],
-      //   ),
-      // ),
     );
   }
 }
@@ -82,7 +137,10 @@ class ListUserItem extends StatelessWidget {
         ),
         child: Row(
           children: [
-            const CircleAvatar(radius: 32),
+            CircleAvatar(
+              radius: 32,
+              backgroundImage: NetworkImage(avatarUrl),
+            ),
             const SizedBox(width: 20),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
