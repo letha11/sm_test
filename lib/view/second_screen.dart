@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:suitmedia_test/views/first_screen.dart';
-import 'package:suitmedia_test/views/third_screen.dart';
+import 'package:suitmedia_test/view/first_screen.dart';
+import 'package:suitmedia_test/view/third_screen.dart';
 
 class SecondScreen extends StatelessWidget {
   const SecondScreen({super.key});

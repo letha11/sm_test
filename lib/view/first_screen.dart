@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:suitmedia_test/views/second_screen.dart';
+import 'package:suitmedia_test/helper/palindrome_check.dart';
+import 'package:suitmedia_test/view/second_screen.dart';
 
 class FirstScreen extends StatefulWidget {
   const FirstScreen({super.key});
@@ -59,7 +60,8 @@ class _FirstScreenState extends State<FirstScreen> {
                       width: double.infinity,
                       child: CustomTextButton(
                         'CHECK',
-                        onPressed: () {},
+                        onPressed: () =>
+                            checkPalindrome(secondTextController.text),
                       ),
                     ),
                     const SizedBox(height: 15),
@@ -84,6 +86,35 @@ class _FirstScreenState extends State<FirstScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void checkPalindrome(String text) {
+    final bool isPalindrome = palindromeCheck(text);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          isPalindrome ? 'isPalindrome' : "not palindrome",
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+        content: Text(
+          isPalindrome ? 'This is a palindrome' : 'This is not a palindrome',
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text(
+              'OK',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -133,6 +164,7 @@ class CustomTextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      // a += text[text.length - 1 - i];
       controller: controller,
       style: Theme.of(context)
           .textTheme
